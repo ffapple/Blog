@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+        方萍个人博客 - 一个站在web后端设计之路的技术员个人博客网站
+{% endblock %}
+{% block mycss %}
+<link href='{% static "css/msh.css" %}' rel='stylesheet'>
+{% endblock %}
+
+{% block content %}
+&nbsp;&nbsp;<h2>{{article.title}}</h2>
+<br><br><br>
+&nbsp;&nbsp;<strong>发表日期</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span>{{article.date}}</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>点击量</strong>&nbsp;&nbsp;<span>{{article.click_num}}</span>
+<p>&nbsp;&nbsp;{{article.user.username}}</p>
+<br><br>
+{% for tag in article.tags.all %}
+&nbsp;&nbsp;<span>{{tag}}</span>
+{% endfor %}
+<br><br>
+<div class="container">
+    &nbsp;&nbsp;<p>{{article.content | safe}}</p>
+       <p> <a href="/"><img src="{{MEDIA_URL}}{{article.image}}"></a></p>
+</div>
+<br><br>
+
+<h4>相关文章</h4>
+<ul>
+{% for a in article_list_about %}
+<li><a href='{% url "article:detail" %}?id={{a.id}}'><span>{{a.title}}</span></a></li>
+{% endfor %}
+</ul>
+
+<div class='news_pl'>
+        <h2>文章评论</h2>
+   
+        <ul>
+                {% for comment in comments %}
+                <li>
+                        <p><span>{{comment.nickname}}</span><span>{{comment.date}}</span></p>
+                        <p>{{comment.content}}</p>
+
+                </li>
+                {% endfor %}
+                <li><p><span>昵称</span><span>2020-8-2</span></p>
+                        <p>评论测试</p></li>
+                        <li><p><span>昵称</span><span>2020-8-2</span></p>
+                                <p>评论测试</p></li>
+                                <li><p><span>昵称</span><span>2020-8-2</span></p>
+                                        <p>评论测试</p></li>
+        </ul>
+        <div id='plpost'>
+                <p><span>来说句话吧..</span><span>共有评论数:{{comments.count}}条</span></p>
+                <p><input type='text' name='uname' id='uname' placeholder="请输入昵称"></p>
+                <p>
+                        <textarea name='saytext' id='saytext' cols="100" rows='6'></textarea>
+                </p>
+                <p><input type='submit' value="发表评论" id="btn"></p>
+                
+                 <!-- <button id="btn" type="button">评论</button> -->
+        </div>
+</div>
+
+{% endblock %}
+
+{% block myjs %}
+<script>
+      $(function () {
+            $('#btn').click(function () {
+                        // 从文本框取值
+                        console.log('取值');
+                        // var nickname = $('#uname').val();
+                        var nickname = $('#uname').val();
+                        var saytext = $('#saytext').val();
+                        // 发出请求
+                        $.getJSON('{% url "article:comment" %}',{nickname:nickname,saytext:saytext,aid='{{article.id}}'},function(data){
+                               if(data.status==1){
+                                       console.log('1111');
+                                       window.location.href='{% url "article:detail" %}?id={{article.id}}'
+                               }
+                        });
+                });
+        });
+</script>
+
+{% endblock %}

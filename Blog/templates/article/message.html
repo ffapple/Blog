@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+        方萍个人博客 - 一个站在web后端设计之路的技术员个人博客网站
+{% endblock %}
+
+{% block content %}
+<ul>
+    {% for message in messages %}
+
+    <li>
+        <span><img src='{{MEDIA_URL}}{{message.icon}}'></span>
+        <span>{{message.date}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>{{message.nickname}}</span>
+        <p>{{message.content}}</p>
+    </li>
+    {% endfor %}
+</ul>
+<form action="{% url 'article:message' %}" method="post" enctype="multipart/form-data"> 
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="提交留言" name="login">
+</form>
+{% endblock %}

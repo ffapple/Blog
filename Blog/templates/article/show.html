@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+        方萍个人博客 - 一个站在web后端设计之路的技术员个人博客网站
+{% endblock %}
+{% block mycss %}
+<link href='{% static "css/learn.css" %}' rel='stylesheet'>
+{% endblock %}
+{% block content %}
+<ul>
+    {% for tag in tags %}
+        <li><a href='{% url "article:show" %}?tid={{tag.id}}&page={{page}}'> {{tag.name}}</a></li>
+    {% endfor  %}
+</ul>
+<ul class='cbp_tmtimeline'>
+    {% for article in page.object_list %}
+
+        <li>
+            <time class='cbp_tmtime'><span>{{article.date | date:'m-d'}}</span></time>
+            <div class="cbp_tmicon"></div>
+            <div class='cbp_tmlabel' data-scroll-reveal='enter right over ls'>
+                <h2>
+                        {{article.title}}
+                </h2>
+                <p><span class='blogpic'><a href='/'><img src="{{MEDIA_URL}}{{article.image}}"><p>
+                  {{article.desc}}
+                </p></a> </span></p>
+                <a href="{% url 'article:detail' %}?id={{article.id}}">阅读更多</a>
+            </div>
+        </li>
+
+    {% endfor %}
+
+</ul>
+
+<div class='page'>
+    <a title='Total record'><b>{{page.pagination.num_pages}}</b></a>
+    <a href="{% url 'article:show' %}?page={% if page.has_previous %}{{page.previous_page_number}}{%else%}{{1}}{%endif%}&tid={{tid}}">L</a>
+    {% for page_number in page.paginator.page_range %}
+
+        {% if page.num == page_number %}
+
+            <b>{{page_number}}</b>
+        {% else %}
+        <a href='{% url "article:show" %}?page={{page_number}}&tid={{tid}}'>{{page_number}}</a>
+
+        {% endif %}
+
+    {% endfor %}
+    <a href="{% url 'article:show' %}?page={% if page.has_next %}{{page.next_page_number}}{%else%}{{page.num}}{%endif%}&tid={{tid}}">N</a>
+</div>
+{% endblock %}
